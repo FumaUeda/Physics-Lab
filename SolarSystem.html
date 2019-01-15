@@ -1,0 +1,261 @@
+
+<html>
+
+<style>
+    #sun {
+     width: 100px;
+     height: 100px;
+     position: absolute;
+     background-color: yellow;
+     border-radius: 50%;
+     left: 650px;
+     top: 400px;
+    }
+
+    #html_mercury {
+     width: 10px;
+     height: 10px;
+     position: absolute;
+     background-color: gray;
+     border-radius: 50%;
+     left: 611px;
+     top: 400px;
+    }
+
+    #html_venus {
+     width: 15px;
+     height: 15px;
+     position: absolute;
+     background-color: red;
+     border-radius: 50%;
+     left: 588px;
+     top: 400px;
+    }
+
+    #html_earth {
+     width: 20px;
+     height: 20px;
+     position: absolute;
+     background-color: blue;
+     border-radius: 50%;
+     left: 550px;
+     top: 400px;
+    }
+
+    #html_mars {
+     width: 25px;
+     height: 25px;
+     position: absolute;
+     background-color: orange;
+     border-radius: 50%;
+     left: 500px;
+     top: 400px;
+    }
+
+    #html_jupiter {
+     width: 50px;
+     height: 50px;
+     position: absolute;
+     background-color: wheat;
+     border-radius: 50%;
+     left: 130px;
+     top: 400px;
+    }
+
+    #html_saturn {
+     width: 50px;
+     height: 50px;
+     position: absolute;
+     background-color: papayawhip;
+     border-radius: 50%;
+     left: 0px;
+     top: 400px;
+    }
+
+    #html_uranus {
+     width: 50px;
+     height: 50px;
+     position: absolute;
+     background-color: skyblue;
+     border-radius: 50%;
+     left: 0px;
+     top: 400px;
+    }
+
+    #html_neptune {
+     width: 50px;
+     height: 50px;
+     position: absolute;
+     background-color: skyblue;
+     border-radius: 50%;
+     left: 0px;
+     top: 400px;
+    }
+
+
+</style>
+
+<body style="background-color:black">
+
+  <a style="font-size:4em;color:white">The Solar System</a>
+
+    <p>
+    <button onclick="start()">Start</button>
+    </p>
+
+  <a style="font-size:2em;color:white" id="time"></a> <br/>
+  <a style="font-size:2em;color:white" id="distance"></a> <br/>
+  <a style="font-size:2em;color:white" id="speed"></a> <br/>
+
+  <div>
+
+  <div id="sun"></div>
+  <div id="html_mercury"></div>
+  <div id="html_venus"></div>
+  <div id="html_earth"></div>
+  <div id="html_mars"></div>
+  <div id="html_jupiter"></div>
+  <div id="html_saturn"></div>
+  <div id="html_uranus"></div>
+  <div id="html_neptune"></div>
+  </div>
+
+
+    <script>
+
+        function make_vector(x_in,y_in) {
+            
+            let vector = {
+                x: x_in,
+                y: y_in,
+                add(v2) {
+                    return make_vector(this.x + v2.x, this.y + v2.y);
+                },
+                sm(scalar){
+                    return make_vector(this.x*scalar, this.y*scalar);
+
+                },
+                mag(){
+                    return Math.sqrt( Math.pow(this.x,2) + Math.pow(this.y,2) );
+                }
+
+            };
+
+            return vector;
+
+        }
+
+
+       //Gravitational Constant
+       const G = 2000.0;
+
+       let sun = {
+            mass: 1.0,
+            r: make_vector(650.0, 400.0),
+            v: make_vector(0,0)
+        }; 
+
+
+        function make_planet(planet_name, orbital_r) { 
+
+            let au = 400.0
+
+            //Orbital Radius
+            let distance = orbital_r*au;
+
+            //Mass (1<=m<=10)
+            let m = Math.random() * 0.09 + 0.1;
+        
+            //Initial Position 
+            let r0 = make_vector(sun.r.x + distance, sun.r.y);
+
+            //Position relative to sun
+            let del0 = make_vector(r0.x-sun.r.x , r0.y-sun.r.y)
+
+            //Initial velocity of planet
+            let v0 = make_vector(0.0, Math.sqrt(G * sun.mass/del0.mag() ));
+
+            //Define planet object
+             let planet = {
+                name: planet_name,
+                orbital_r: orbital_r,
+                mass: m,
+                r: r0,
+                v: v0
+            };
+            
+            //Returns planet object
+            return planet;
+        
+        }
+
+        let p_mercury = make_planet("Mercury",0.39);
+        let p_venus = make_planet("Venus",0.72);
+        let p_earth = make_planet("Earth",1);
+        let p_mars = make_planet("Mars",1.5);
+        let p_jupiter = make_planet("Jupiter",5.2);
+        let p_saturn = make_planet("Saturn",9.6);
+        let p_uranus = make_planet("Uranus",19.2);
+        let p_neptune = make_planet("Neptune",30.1);
+
+
+        function start() {
+
+            let html_mercury = document.getElementById("html_mercury");
+            let html_venus = document.getElementById("html_venus");
+            let html_earth = document.getElementById("html_earth");
+            let html_mars = document.getElementById("html_mars");
+            let html_jupiter = document.getElementById("html_jupiter");
+            let html_saturn = document.getElementById("html_saturn");
+            let html_uranus = document.getElementById("html_uranus");
+            let html_neptune = document.getElementById("html_neptune");
+
+            //Time
+            let t = 0;
+            let dt = 0.1;
+
+            //Timer (ms)
+            let id1 = setInterval(function () {
+                frame(p_mercury, html_mercury);
+                frame(p_venus, html_venus);
+                frame(p_earth, html_earth);
+                frame(p_mars, html_mars);
+                frame(p_jupiter, html_jupiter);
+                frame(p_saturn, html_saturn);
+                frame(p_uranus, html_uranus);
+                frame(p_neptune, html_neptune);
+            }, 40); //40ms = 25 fps
+    
+        
+            function frame(planet,p) {
+               
+                //Increment time
+                t = t + dt;
+                document.getElementById("time").innerHTML = "t; " + Math.round(t);
+
+
+            
+                //Position relative to sun
+                let del = make_vector(planet.r.x-sun.r.x, planet.r.y-sun.r.y)
+                let r = del.mag()
+
+                //Newtonian Gravity
+                let Fg = -G * (sun.mass * planet.mass) / Math.pow(r,2);
+                let a = make_vector( (Fg / planet.mass)*(del.r.x / r), (Fg / planet.mass)*(del.r.y/r) );
+
+                //Update velocity
+                planet.v = planet.v.add(a.sm(dt));
+
+                //Update position
+                planet.r = planet.r.add(planet.v.sm(dt));
+
+                html_planet.style.left = Math.round(planet.r.x - 10.0) + 'px';
+                html_planet.style.top = Math.round(planet.r.y - 10.0) + 'px';
+
+    
+            }
+        }
+    
+    </script>    
+
+</body>
